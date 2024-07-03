@@ -1,8 +1,55 @@
+import os
 import json
-import re
-from flask import Flask, request, jsonify
-from nltk.tokenize import word_tokenize
-from nltk.corpus import stopwords
 import pandas as pd
-import nltk
-print("Hello My World")
+from pathlib import Path
+
+# Define the paths to your data files and group them into base path
+base_path = Path('data-quran-master')
+ayah_text_path = base_path / 'ayah-text' / 'imlaei-qurancom.md'
+tafseer_path = base_path / 'ayah-tafsir' / 'en-ibn-kathir-qurancom.md'
+translation_path = base_path / 'ayah-translation' / 'en-hilali-khan-quranenc.md'
+surah_info_path = base_path / 'surah-info' / 'en-qurancom.md'
+surah_json_path = base_path / 'surah' / 'surah.json'
+surah_translation_path = base_path / 'surah-translation' / 'en-qurancom.json'
+
+# Load ayah text
+def load_ayah_text(filepath):
+    with open(filepath, 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+    ayah_text = {i+1: line.strip() for i, line in enumerate(lines) if line.strip()}
+    return ayah_text
+
+# Load tafsir
+def load_tafsir(filepath):
+    with open(filepath, 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+    tafsir = {i+1: line.strip() for i, line in enumerate(lines) if line.strip()}
+    return tafsir
+
+# Load translation
+def load_translation(filepath):
+    with open(filepath, 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+    translation = {i+1: line.strip() for i, line in enumerate(lines) if line.strip()}
+    return translation
+
+# Load JSON data
+def load_json(filepath):
+    with open(filepath, 'r', encoding='utf-8') as file:
+        return json.load(file)
+
+# Load all datasets
+ayah_text = load_ayah_text(ayah_text_path)
+tafsir = load_tafsir(tafseer_path)
+translation = load_translation(translation_path)
+surah_info = load_tafsir(surah_info_path)  # Assuming similar structure as tafsir
+surah_data = load_json(surah_json_path)
+surah_translation = load_json(surah_translation_path)
+
+# Display some data for verification
+print("Ayah Text:", list(ayah_text.items())[:5])
+print("Tafsir:", list(tafsir.items())[:5])
+print("Translation:", list(translation.items())[:5])
+print("Surah Info:", list(surah_info.items())[:5])
+print("Surah Data:", list(surah_data.items())[:5])
+print("Surah Translation:", list(surah_translation.items())[:5])
